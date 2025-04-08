@@ -12,7 +12,7 @@ import org.json.JSONObject;
 public class WeatherDashboard
  {
    
- private static final String API_KEY = "YOUR_API_KEY"; 
+ private static final String API_KEY = "2dcf82f44433345d330b16bd62999e84"; 
 // Replace with your OpenWeatherMap API key
     private static final String BASE_URL = "https://api.openweathermap.org/data/2.5/weather?q=";
 
