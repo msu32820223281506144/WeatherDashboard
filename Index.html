@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #b51263;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgb(198, 183, 183);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 60%;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .weather-info {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #e0f7fa;
+            display: inline-block;
+        }
+        .temperature {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        .city {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weather Dashboard</h1>
+        <input type="text" id="city" placeholder="Enter City Name" />
+        <button onclick="getWeather()">fetch</button>
+
+        <div id="weather" class="weather-info" style="display: none;">
+            <div class="city" id="cityName"></div>
+            <div class="temperature" id="temperature"></div>
+            <div id="description"></div>
+        </div>
+    </div>
+
+    <script>
+       const apiKey = "bbbca5caaf500276e0aed91a1761e169"; //
+       async function getWeather() {
+  const city = document.getElementById("city").value.trim();
+  const result = document.getElementById("weather");
+
+  if (!city) {
+    result.style.display = "block";
+    result.innerHTML = "<p>Please enter a city.</p>";
+    return;
+  }
+
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`;
+
+  result.style.display = "block";
+  result.innerHTML = "<p>Analyzing...</p>";
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.cod !== 200) {
+      result.innerHTML = `<p>❌ ${data.message}</p>`;
+      return;
+    }
+
+    const description = data.weather[0].description;
+    const capitalizedDesc = description.charAt(0).toUpperCase() + description.slice(1);
+    const icon = data.weather[0].icon;
+    const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+
+    result.innerHTML = `
+      <div class="city">${data.name}, ${data.sys.country}</div>
+      <img src="${iconUrl}" alt="${capitalizedDesc}" />
+      <div class="temperature">${data.main.temp}°C</div>
+      <div>${capitalizedDesc}</div>
+      <div>💧 Humidity: ${data.main.humidity}%</div>
+      <div>🌬️ Wind: ${data.wind.speed} m/s</div>
+    `;
+  } catch (error) {
+    console.error("Fetch error:", error);
+    result.innerHTML = `<p>⚠️ Failed to fetch weather. Error: ${error.message}</p>`;
+  }
+}
+
+
+    </script>
+</body>
+</html>
